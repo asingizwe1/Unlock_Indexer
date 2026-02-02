@@ -1,5 +1,6 @@
 use ethers::prelude::*;
-
+//this generates Rust bindings for your smart contract ABI.
+//it’s expanded at compile time by Rust.
 abigen!(
     Governor,
     r#"[
@@ -19,6 +20,15 @@ abigen!(
         )
     ]"#
 );
+/*
+ Rust doesn’t know how to call those ABI functions directly. That’s where abigen! comes in:
+
+Reads ABI JSON → e.g., governor.json
+
+Generates Rust types and methods that mirror the contract
+
+Creates a strongly typed API so you can call contract.vote(...) instead of manually encoding function signatures
+*/
 use futures_util::StreamExt;
 
 pub async fn index_governor(provider: Provider<Ws>, address: Address) {
