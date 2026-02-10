@@ -1,7 +1,9 @@
+
 [package]
 name = "unlock-indexer"
 version = "0.1.0"
 edition = "2021"
+
 
 [dependencies]
 
@@ -17,3 +19,4 @@ sqlx = { version = "0.7", features = ["runtime-tokio", "postgres", "macros"] }
 
 ethers = { version = "2.0", features = ["ws", "abigen"] }
 anyhow = "1.0"
+futures-util = "0.3.31"
