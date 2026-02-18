@@ -1,3 +1,4 @@
+use ethers::contract::abigen;
 use ethers::prelude::*;
 use ethers::providers::{Provider, Ws};
 use futures_util::StreamExt;
@@ -6,24 +7,25 @@ use std::sync::Arc;
 
 use crate::db::save_proposal;
 
+
 abigen!(
     Governor,
-    r#"
-    event ProposalCreated(
-        uint256 proposalId,
-        address proposer,
-        uint256 startBlock,
-        uint256 endBlock,
-        string description
-    )
+    r#"[
+        event ProposalCreated(
+            uint256 proposalId,
+            address proposer,
+            uint256 startBlock,
+            uint256 endBlock,
+            string description
+        );
 
-    event VoteCast(
-        address voter,
-        uint256 proposalId,
-        uint8 support,
-        uint256 weight
-    )
-    "#
+        event VoteCast(
+            address voter,
+            uint256 proposalId,
+            uint8 support,
+            uint256 weight
+        );
+    ]"#
 );
 
 /// ENTRY POINT CALLED FROM main.rs
