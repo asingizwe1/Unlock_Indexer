@@ -1,4 +1,5 @@
-use ethers::contract::abigen;
+use crate::indexer::governor::Governor;
+use crate::indexer::governor::ProposalCreatedFilter;
 use ethers::prelude::*;
 use ethers::providers::{Provider, Ws};
 use futures_util::StreamExt;
@@ -6,27 +7,16 @@ use sqlx::PgPool;
 use std::sync::Arc;
 
 use crate::db::save_proposal;
-
-
-abigen!(
-    Governor,
-    r#"[
-        event ProposalCreated(
-            uint256 proposalId,
-            address proposer,
-            uint256 startBlock,
-            uint256 endBlock,
-            string description
-        );
-
-        event VoteCast(
-            address voter,
-            uint256 proposalId,
-            uint8 support,
-            uint256 weight
-        );
-    ]"#
-);
+//Rust macro expansion happens per module.
+//Defining the same contract twice with the same name causes unresolved types in other modules.
+//so the abigen here shouldnt exist
+// abigen!(
+//     Governor,
+//     r#"
+//         event ProposalCreated(uint256 proposalId, address proposer, uint256 startBlock, uint256 endBlock, string description);
+//         event VoteCast(address voter, uint256 proposalId, uint8 support, uint256 weight);
+//     "#
+// );
 
 /// ENTRY POINT CALLED FROM main.rs
 pub async fn sync_all(provider: Arc<Provider<Ws>>, pool: PgPool) {

@@ -1,42 +1,21 @@
+use ethers::contract::abigen;
 use ethers::prelude::*;
-//this generates Rust bindings for your smart contract ABI.
-//it’s expanded at compile time by Rust.
+use futures_util::StreamExt;
+
 abigen!(
     Governor,
-    r#"[
-        event ProposalCreated(
-            uint256 proposalId,
-            address proposer,
-            uint256 startBlock,
-            uint256 endBlock,
-            string description
-        )
-
-        event VoteCast(
-            address voter,
-            uint256 proposalId,
-            uint8 support,
-            uint256 weight
-        )
-    ]"#
+    r#"
+        event ProposalCreated(uint256 proposalId, address proposer, uint256 startBlock, uint256 endBlock, string description);
+        event VoteCast(address voter, uint256 proposalId, uint8 support, uint256 weight);
+    "#
 );
-/*
- Rust doesn’t know how to call those ABI functions directly. That’s where abigen! comes in:
-
-Reads ABI JSON → e.g., governor.json
-
-Generates Rust types and methods that mirror the contract
-
-Creates a strongly typed API so you can call contract.vote(...) instead of manually encoding function signatures
-*/
-use futures_util::StreamExt;
 
 pub async fn index_governor(provider: Provider<Ws>, address: Address) {
     let governor = Governor::new(address, provider);
 
     let mut stream = governor
         .event::<ProposalCreatedFilter>()
-        .from_block(0)
+        .from_block(0u64)
         .stream()
         .await
         .unwrap();
