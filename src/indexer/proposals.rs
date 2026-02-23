@@ -28,8 +28,7 @@ pub async fn sync_all(provider: Arc<Provider<Ws>>, pool: PgPool) {
 }
 
 async fn index_governor(provider: Arc<Provider<Ws>>, pool: PgPool, address: Address) {
-    let governor = Governor::new(address, provider);
-
+    let governor = Governor::new(address, Arc::new(provider));
     let mut stream = governor
         .event::<ProposalCreatedFilter>()
         .from_block(0u64)
@@ -49,8 +48,8 @@ async fn index_governor(provider: Arc<Provider<Ws>>, pool: PgPool, address: Addr
             &pool,
             proposal.proposal_id.as_u64() as i64,
             format!("{:?}", proposal.proposer),
-            proposal.start_block.as_u64() as i64,
-            proposal.end_block.as_u64() as i64,
+            0, // start_block not emitted by this Governor
+            0, // end_block not emitted by this Governor
             proposal.description,
         )
         .await;
