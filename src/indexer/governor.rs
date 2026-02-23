@@ -2,13 +2,7 @@ use ethers::contract::abigen;
 use ethers::prelude::*;
 use futures_util::StreamExt;
 
-abigen!(
-    Governor,
-    r#"
-        event ProposalCreated(uint256 proposalId, address proposer, uint256 startBlock, uint256 endBlock, string description);
-        event VoteCast(address voter, uint256 proposalId, uint8 support, uint256 weight);
-    "#
-);
+abigen!(Governor, "./abi/governor.json");
 
 pub async fn index_governor(provider: Provider<Ws>, address: Address) {
     let governor = Governor::new(address, provider);
